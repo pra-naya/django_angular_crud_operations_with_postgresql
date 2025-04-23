@@ -4,7 +4,7 @@ pipeline {
         stage('Check') {
             steps {
                 sh 'ls -la'
-                sh 'echo ${params.SERVER_IP}' 
+                sh "echo ${params.SERVER_IP}" 
            }
         }   
     }
