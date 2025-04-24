@@ -6,15 +6,15 @@ pipeline {
                 sh """
                     cd frontend; 
                     npm install && ng build --configuration=production
-                    ls
-                    pwd
                 """
             }
         }
         stage('Zip Files') {
             steps {
                 sh """
-                    zip -r ../fullstack_test_frontend_${BUILD_NUMBER}.zip ./dist
+                    ls
+                    pwd
+                    zip -r ../fullstack_test_frontend_${BUILD_NUMBER}.zip dist
                     rm -rf ./*
                     mv ../fullstack_test_frontend_${BUILD_NUMBER}.zip .
 
