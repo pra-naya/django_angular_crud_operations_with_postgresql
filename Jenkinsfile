@@ -3,8 +3,8 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'ng build --configuration=production'
-                sh 'find . -mindepth 1 -not -path "./frontend/dist*" -exec rm -rf {} +'
+                sh 'cd frontend; ng build --configuration=production'
+                sh 'find . -mindepth 1 -not -path "./dist*" -exec rm -rf {} +'
             }
         }
         stage('Zip Files') {
