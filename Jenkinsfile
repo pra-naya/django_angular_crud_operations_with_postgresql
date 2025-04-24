@@ -33,8 +33,8 @@ pipeline {
         stage('Transfer Files') {
             steps {
                 sh "echo ${BUILD_NUMBER}"
-                sh "scp fullstack_test_frontend${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/tmp"
-                sh "scp fullstack_test_backend${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/tmp"
+                sh "scp frontend/fullstack_test_frontend${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/tmp"
+                sh "scp backend/fullstack_test_backend${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/tmp"
            }
         }
         stage('Deploy') {
@@ -56,3 +56,4 @@ pipeline {
         }
     }
 }
+
