@@ -1,11 +1,15 @@
 pipeline {
     agent any
     stages {
+        stage('Build') {
+            sh 'ng build --configuration=production'
+            sh 'find . -mindepth 1 -not -path './frontend/dist*' -exec rm -rf {} +'
+        }
         stage('Zip Files') {
             steps {
                 sh """
                 rm -rf .git
-                zip -r fullstack_test_${BUILD_NUMBER}.zip ./backend
+                zip -r fullstack_test_${BUILD_NUMBER}.zip .
                 """
            }
         }
