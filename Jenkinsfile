@@ -3,8 +3,10 @@ pipeline {
     stages {
         stage('Zip Files') {
             steps {
-                sh 'rm -rf .git'
-                sh "zip -r fullstack_test_$BUILD_NUMBER.zip ./backend"
+                sh """
+                rm -rf .git
+                zip -r fullstack_test_$BUILD_NUMBER.zip ./backend
+                """
            }
         }
         stage('Transfer Files') {
