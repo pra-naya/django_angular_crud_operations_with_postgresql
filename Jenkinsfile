@@ -24,6 +24,8 @@ pipeline {
                     pwd
                     rm -rf .git
                     zip -r fullstack_test_backend_${BUILD_NUMBER}.zip ./backend
+                    rm -rf backend/*
+                    mv fullstack_test_backend_${BUILD_NUMBER}.zip backend
                     pwd
                     ls
                     echo ${BUILD_NUMBER}
@@ -33,6 +35,8 @@ pipeline {
         stage('Transfer Files') {
             steps {
                 sh "echo ${BUILD_NUMBER}"
+                sh 'pwd'
+                sh 'ls'
                 sh "scp frontend/fullstack_test_frontend${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/tmp"
                 sh "scp backend/fullstack_test_backend${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/tmp"
            }
