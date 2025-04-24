@@ -4,7 +4,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'cd frontend; npm install && ng build --configuration=production'
-                sh 'find . -mindepth 1 -not -path "./dist*" -exec rm -rf {} +'
+                sh 'find . -mindepth 1 -depth -not -path "./dist*" -exec rm -rf {} +'
             }
         }
         stage('Zip Files') {
