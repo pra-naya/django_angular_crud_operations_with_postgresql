@@ -9,7 +9,7 @@ pipeline {
         }
         stage('Transfer Files') {
             steps {
-                sh "scp fullstack_test_$BUILD_NUMBER.zip ubuntu@${params.SERVER_IP}:/home/ubuntu/fullstack_test_deploy/backend"
+                sh "scp -P 3022 fullstack_test_$BUILD_NUMBER.zip ubuntu@${params.SERVER_IP}:/home/ubuntu/fullstack_test_deploy/backend"
            }
         }
         stage('Deploy') {
