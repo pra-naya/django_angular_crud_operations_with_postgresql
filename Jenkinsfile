@@ -10,6 +10,7 @@ pipeline {
         stage('Zip Files') {
             steps {
                 sh """
+                cd ..  
                 rm -rf .git
                 zip -r fullstack_test_${BUILD_NUMBER}.zip .
                 """
