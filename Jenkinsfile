@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Build') {
             sh 'ng build --configuration=production'
-            sh 'find . -mindepth 1 -not -path './frontend/dist*' -exec rm -rf {} +'
+            sh 'find . -mindepth 1 -not -path "./frontend/dist*" -exec rm -rf {} +'
         }
         stage('Zip Files') {
             steps {
