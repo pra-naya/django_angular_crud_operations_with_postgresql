@@ -16,11 +16,15 @@ pipeline {
                 cd ..  
                 rm -rf .git
                 zip -r fullstack_test_${BUILD_NUMBER}.zip .
+                pwd
+                ls
+                echo ${BUILD_NUMBER}
                 """
            }
         }
         stage('Transfer Files') {
             steps {
+                sh "echo ${BUILD_NUMBER}"
                 sh "scp fullstack_test_${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/tmp"
            }
         }
