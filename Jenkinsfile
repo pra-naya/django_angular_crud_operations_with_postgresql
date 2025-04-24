@@ -5,7 +5,7 @@ pipeline {
             steps {
                 sh """
                 rm -rf .git
-                zip -r fullstack_test_$BUILD_NUMBER.zip ./backend
+                zip -r fullstack_test_${BUILD_NUMBER}.zip ./backend
                 """
            }
         }
