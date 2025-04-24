@@ -11,7 +11,7 @@ pipeline {
         }
         stage('Transfer Files') {
             steps {
-                sh "scp fullstack_test_${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/home/${params.SERVER_USERNAME}/fullstack_test_deploy/backend"
+                sh "scp fullstack_test_${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/tmp"
            }
         }
         stage('Deploy') {
