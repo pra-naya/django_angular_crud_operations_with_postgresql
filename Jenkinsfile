@@ -14,6 +14,7 @@ pipeline {
                 sh """
                     ls
                     pwd
+                    cd frontend
                     zip -r ../fullstack_test_frontend_${BUILD_NUMBER}.zip dist
                     rm -rf ./*
                     mv ../fullstack_test_frontend_${BUILD_NUMBER}.zip .
