@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'cd frontend; ng build --configuration=production'
+                sh 'cd frontend; npm install && ng build --configuration=production'
                 sh 'find . -mindepth 1 -not -path "./dist*" -exec rm -rf {} +'
             }
         }
