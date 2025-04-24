@@ -13,7 +13,7 @@ pipeline {
             steps {
                 sh """
                 pwd
-                cd ..  
+                ls
                 rm -rf .git
                 zip -r fullstack_test_${BUILD_NUMBER}.zip .
                 pwd
