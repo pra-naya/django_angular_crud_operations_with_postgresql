@@ -17,7 +17,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh """
-                    ssh ${params.SERVER_USERNAME}@${params.SERVER_IP} "cd /home/${params.SERVER_USERNAME}/fullstack_test_deploy/backend && zip -r ../../fullstack_test_backup/backup_${BUILD_NUMBER}.zip . && rm -rf ./* && unzip /tmp/fullstack_test_${BUILD_NUMBER}.zip -d . && sudo systemctl restart fullstack_test"
+                    ssh ${params.SERVER_USERNAME}@${params.SERVER_IP} "cd /home/${params.SERVER_USERNAME}/fullstack_test_deploy/ && zip -r ../../fullstack_test_backup/backup_${BUILD_NUMBER}.zip . && rm -rf ./* && unzip /tmp/fullstack_test_${BUILD_NUMBER}.zip -d . && systemctl restart fullstack_test"
                 """
                 sh "echo ${params.SERVER_IP}"
            }
