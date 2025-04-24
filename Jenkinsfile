@@ -6,48 +6,52 @@ pipeline {
                 sh """
                     cd frontend; 
                     npm install && ng build --configuration=production
-                    zip -r ../fullstack_test_frontend_${BUILD_NUMBER}.zip ./dist
-                    rm -rf ./*
-                    mv ../fullstack_test_frontend_${BUILD_NUMBER}.zip .
                     ls
                     pwd
                 """
             }
         }
-        // stage('Zip Files') {
-        //     steps {
-        //         sh """
-        //         pwd
-        //         ls
-        //         rm -rf .git
-        //         zip -r fullstack_test_${BUILD_NUMBER}.zip .
-        //         pwd
-        //         ls
-        //         echo ${BUILD_NUMBER}
-        //         """
-        //    }
-        // }
-        // stage('Transfer Files') {
-        //     steps {
-        //         sh "echo ${BUILD_NUMBER}"
-        //         sh "scp fullstack_test_${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/tmp"
-        //    }
-        // }
-        // stage('Deploy') {
-        //     steps {
-        //         sh """
-        //             ssh ${params.SERVER_USERNAME}@${params.SERVER_IP} '
-        //                 cd /home/${params.SERVER_USERNAME}/fullstack_test_deploy/ && 
-        //                 zip -r ../fullstack_test_backup/backup_${BUILD_NUMBER}.zip . && 
-        //                 rm -rf ./* && 
-        //                 unzip /tmp/fullstack_test_${BUILD_NUMBER}.zip -d . && 
-        //                 cd backend && 
-        //                 python3 -m venv venv && 
-        //                 source venv/bin/activate && 
-        //                 pip install -r requirements.txt && 
-        //                 echo "${SERVER_PASS}" | sudo -S systemctl restart fullstack_test'
-        //         """
-        //    }
-        // }
+        stage('Zip Files') {
+            steps {
+                sh """
+                    zip -r ../fullstack_test_frontend_${BUILD_NUMBER}.zip ./dist
+                    rm -rf ./*
+                    mv ../fullstack_test_frontend_${BUILD_NUMBER}.zip .
+
+                    cd ..
+                    ls 
+                    pwd
+                    rm -rf .git
+                    zip -r fullstack_test_backend_${BUILD_NUMBER}.zip ./backend
+                    pwd
+                    ls
+                    echo ${BUILD_NUMBER}
+                """
+           }
+        }
+        stage('Transfer Files') {
+            steps {
+                sh "echo ${BUILD_NUMBER}"
+                sh "scp fullstack_test_frontend${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/tmp"
+                sh "scp fullstack_test_backend${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/tmp"
+           }
+        }
+        stage('Deploy') {
+            steps {
+                sh """
+                    ssh ${params.SERVER_USERNAME}@${params.SERVER_IP} '
+                        cd /home/${params.SERVER_USERNAME}/fullstack_test_deploy/ && 
+                        zip -r ../fullstack_test_backup/backup_${BUILD_NUMBER}.zip . && 
+                        rm -rf ./* && 
+                        unzip /tmp/fullstack_test_frontend${BUILD_NUMBER}.zip -d ./frontend && 
+                        unzip /tmp/fullstack_test_backend${BUILD_NUMBER}.zip -d ./backend && 
+                        cd backend && 
+                        python3 -m venv venv && 
+                        source venv/bin/activate && 
+                        pip install -r requirements.txt && 
+                        echo "${SERVER_PASS}" | sudo -S systemctl restart fullstack_test'
+                """
+           }
+        }
     }
 }
