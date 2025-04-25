@@ -55,6 +55,8 @@ pipeline {
                         cd backend && 
                         python3 -m venv venv && 
                         source venv/bin/activate && 
+                        echo "here"
+                        pwd
                         pip install -r requirements.txt && 
                         echo "${SERVER_PASS}" | sudo -S systemctl restart fullstack_test'
                 """
