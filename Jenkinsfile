@@ -1,5 +1,12 @@
 pipeline {
     agent any
+    environment {
+        FRONTEND_ZIP = "fullstack_test_frontend${BUILD_NUMBER}.zip"
+        BACKEND_ZIP = "fullstack_test_backend${BUILD_NUMBER}.zip"
+        SERVER = "${params.SERVER_USERNAME}@${params.SERVER_IP}"
+        SERVER_USERNAME = "${params.SERVER_USERNAME}"
+        SERVER_PASS = "${params.SERVER_PASS}"
+    }
     stages {
         stage('Build') {
             steps {
@@ -13,46 +20,32 @@ pipeline {
             steps {
                 sh """
                     cd frontend
-                    zip -r ../fullstack_test_frontend${BUILD_NUMBER}.zip dist/frontend/*
+                    zip -r ../${FRONTEND_ZIP} dist/frontend/*
                     rm -rf ./*
-                    mv ../fullstack_test_frontend${BUILD_NUMBER}.zip .
+                    mv ../${FRONTEND_ZIP} .
 
                     cd ..
                     rm -rf .git
-                    zip -r fullstack_test_backend${BUILD_NUMBER}.zip ./backend
+                    zip -r ${BACKEND_ZIP} ./backend
                     rm -rf backend/*
-                    mv fullstack_test_backend${BUILD_NUMBER}.zip backend
-                    echo ${BUILD_NUMBER}
+                    mv ${BACKEND_ZIP} backend
                 """
            }
         }
         stage('Transfer Files') {
             steps {
-                sh "echo ${BUILD_NUMBER}"
-                // sh 'pwd'
-                // sh 'ls'
-                // sh 'ls frontend'
-                // sh 'ls backend'
-                sh "scp frontend/fullstack_test_frontend${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/tmp"
-                sh "scp backend/fullstack_test_backend${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/tmp"
+                sh "scp frontend/${FRONTEND_ZIP} ${SERVER}:/tmp"
+                sh "scp backend/${BACKEND_ZIP} ${SERVER}:/tmp"
            }
         }
         stage('Deploy') {
             steps {
                 sh """
-                    ssh ${params.SERVER_USERNAME}@${params.SERVER_IP} '
-                        cd /home/${params.SERVER_USERNAME}/fullstack_test_deploy/ && 
-                        zip -r ../fullstack_test_backup/backup_${BUILD_NUMBER}.zip . && 
-                        rm -rf * && 
-                        unzip /tmp/fullstack_test_frontend${BUILD_NUMBER}.zip -d . && 
-                        unzip /tmp/fullstack_test_backend${BUILD_NUMBER}.zip -d . && 
+                    ssh ${SERVER} '
+                        ./fullstack_test_frontend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${FRONTEND_ZIP}
                         
-                        cd backend && 
-                        cp ../../fullstack_test_env/.env .
-                        python3 -m venv venv && 
-                        source venv/bin/activate && 
-                        pip install -r requirements.txt && 
-                        echo "${SERVER_PASS}" | sudo -S systemctl restart fullstack_test'
+                        ./fullstack_test_backend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${BACKEND_ZIP} ${SERVER_PASS}
+                    '
                 """
            }
         }
