@@ -5,7 +5,7 @@ pipeline {
             steps {
                 sh """
                     cd frontend; 
-                    npm install && ng build --configuration=production
+                    npm ci && ng build --configuration=production
                 """
             }
         }
