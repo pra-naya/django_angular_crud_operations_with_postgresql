@@ -53,6 +53,7 @@ pipeline {
                         unzip /tmp/fullstack_test_frontend${BUILD_NUMBER}.zip -d . && 
                         unzip /tmp/fullstack_test_backend${BUILD_NUMBER}.zip -d . && 
                         cd backend && 
+                        cp ../../fullstack_test_env/.env .
                         python3 -m venv venv && 
                         source venv/bin/activate && 
                         echo "here"
