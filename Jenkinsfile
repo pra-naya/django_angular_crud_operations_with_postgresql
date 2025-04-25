@@ -15,7 +15,7 @@ pipeline {
                     ls
                     pwd
                     cd frontend
-                    zip -r ../fullstack_test_frontend${BUILD_NUMBER}.zip dist
+                    zip -r ../fullstack_test_frontend${BUILD_NUMBER}.zip dist/*
                     rm -rf ./*
                     mv ../fullstack_test_frontend${BUILD_NUMBER}.zip .
 
@@ -50,8 +50,8 @@ pipeline {
                         cd /home/${params.SERVER_USERNAME}/fullstack_test_deploy/ && 
                         zip -r ../fullstack_test_backup/backup_${BUILD_NUMBER}.zip . && 
                         rm -rf ./* && 
-                        unzip /tmp/fullstack_test_frontend${BUILD_NUMBER}.zip -d ./frontend && 
-                        unzip /tmp/fullstack_test_backend${BUILD_NUMBER}.zip -d ./backend && 
+                        unzip /tmp/fullstack_test_frontend${BUILD_NUMBER}.zip -d . && 
+                        unzip /tmp/fullstack_test_backend${BUILD_NUMBER}.zip -d . && 
                         cd backend && 
                         python3 -m venv venv && 
                         source venv/bin/activate && 
