@@ -10,82 +10,90 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                if (params.BUILD_TARGET == 'BACKEND') {
-                    echo 'No build required'
-                } else {
-                    sh """
-                        cd frontend; 
-                        npm ci && ng build --configuration=production
-                    """
+                script {
+                    if (params.BUILD_TARGET == 'BACKEND') {
+                        echo 'No build required'
+                    } else {
+                        sh """
+                            cd frontend; 
+                            npm ci && ng build --configuration=production
+                        """
+                    }
                 }
             }
         }
         stage('Zip Files') {
             steps {
                 sh 'rm -rf .git'
-                if (params.BUILD_TARGET == 'BACKEND') {
-                    sh """
-                        zip -r ${BACKEND_ZIP} ./backend
-                        rm -rf backend/*
-                        mv ${BACKEND_ZIP} backend
-                    """
-                } else if (params.BUILD_TARGET == 'FRONTEND') {
-                    sh """
-                        cd frontend
-                        zip -r ../${FRONTEND_ZIP} dist/frontend/*
-                        rm -rf ./*
-                        mv ../${FRONTEND_ZIP} .
-                    """
-                } else {
-                    sh """
-                        cd frontend
-                        zip -r ../${FRONTEND_ZIP} dist/frontend/*
-                        rm -rf ./*
-                        mv ../${FRONTEND_ZIP} .
+                script {
+                    if (params.BUILD_TARGET == 'BACKEND') {
+                        sh """
+                            zip -r ${BACKEND_ZIP} ./backend
+                            rm -rf backend/*
+                            mv ${BACKEND_ZIP} backend
+                        """
+                    } else if (params.BUILD_TARGET == 'FRONTEND') {
+                        sh """
+                            cd frontend
+                            zip -r ../${FRONTEND_ZIP} dist/frontend/*
+                            rm -rf ./*
+                            mv ../${FRONTEND_ZIP} .
+                        """
+                    } else {
+                        sh """
+                            cd frontend
+                            zip -r ../${FRONTEND_ZIP} dist/frontend/*
+                            rm -rf ./*
+                            mv ../${FRONTEND_ZIP} .
 
-                        cd ..
-                        zip -r ${BACKEND_ZIP} ./backend
-                        rm -rf backend/*
-                        mv ${BACKEND_ZIP} backend
-                    """
+                            cd ..
+                            zip -r ${BACKEND_ZIP} ./backend
+                            rm -rf backend/*
+                            mv ${BACKEND_ZIP} backend
+                        """
+                    }
                 }
             }
         }
         stage('Transfer Files') {
             steps {
-                if (params.BUILD_TARGET == 'BACKEND') {
-                    sh "scp backend/${BACKEND_ZIP} ${SERVER}:/tmp"
-                } else if (params.BUILD_TARGET == 'FRONTEND') {
-                    sh "scp frontend/${FRONTEND_ZIP} ${SERVER}:/tmp"
-                } else {
-                    sh "scp frontend/${FRONTEND_ZIP} ${SERVER}:/tmp"
-                    sh "scp backend/${BACKEND_ZIP} ${SERVER}:/tmp"
-                } 
+                script {
+                    if (params.BUILD_TARGET == 'BACKEND') {
+                        sh "scp backend/${BACKEND_ZIP} ${SERVER}:/tmp"
+                    } else if (params.BUILD_TARGET == 'FRONTEND') {
+                        sh "scp frontend/${FRONTEND_ZIP} ${SERVER}:/tmp"
+                    } else {
+                        sh "scp frontend/${FRONTEND_ZIP} ${SERVER}:/tmp"
+                        sh "scp backend/${BACKEND_ZIP} ${SERVER}:/tmp"
+                    } 
+                }
             }
         }
         stage('Deploy') {
             steps {
-                if (params.BUILD_TARGET == 'BACKEND') {
-                    sh """
-                        ssh ${SERVER} '
-                            /home/${SERVER_USERNAME}/scripts/fullstack_test_backend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${BACKEND_ZIP} ${SERVER_PASS}
-                        '
-                    """
-                } else if (params.BUILD_TARGET == 'FRONTEND') {
-                    sh """
-                        ssh ${SERVER} '
-                            /home/${SERVER_USERNAME}/scripts/fullstack_test_frontend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${FRONTEND_ZIP}
-                        '
-                    """
-                } else {
-                    sh """
-                        ssh ${SERVER} '
-                            /home/${SERVER_USERNAME}/scripts/fullstack_test_frontend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${FRONTEND_ZIP}
-                            
-                            /home/${SERVER_USERNAME}/scripts/fullstack_test_backend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${BACKEND_ZIP} ${SERVER_PASS}
-                        '
-                    """
-                } 
+                script {
+                    if (params.BUILD_TARGET == 'BACKEND') {
+                        sh """
+                            ssh ${SERVER} '
+                                /home/${SERVER_USERNAME}/scripts/fullstack_test_backend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${BACKEND_ZIP} ${SERVER_PASS}
+                            '
+                        """
+                    } else if (params.BUILD_TARGET == 'FRONTEND') {
+                        sh """
+                            ssh ${SERVER} '
+                                /home/${SERVER_USERNAME}/scripts/fullstack_test_frontend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${FRONTEND_ZIP}
+                            '
+                        """
+                    } else {
+                        sh """
+                            ssh ${SERVER} '
+                                /home/${SERVER_USERNAME}/scripts/fullstack_test_frontend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${FRONTEND_ZIP}
+                                
+                                /home/${SERVER_USERNAME}/scripts/fullstack_test_backend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${BACKEND_ZIP} ${SERVER_PASS}
+                            '
+                        """
+                    } 
+                }
            }
         }
     }
