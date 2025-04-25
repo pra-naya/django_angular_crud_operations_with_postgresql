@@ -12,22 +12,16 @@ pipeline {
         stage('Zip Files') {
             steps {
                 sh """
-                    ls
-                    pwd
                     cd frontend
                     zip -r ../fullstack_test_frontend${BUILD_NUMBER}.zip dist/frontend/*
                     rm -rf ./*
                     mv ../fullstack_test_frontend${BUILD_NUMBER}.zip .
 
                     cd ..
-                    ls 
-                    pwd
                     rm -rf .git
                     zip -r fullstack_test_backend${BUILD_NUMBER}.zip ./backend
                     rm -rf backend/*
                     mv fullstack_test_backend${BUILD_NUMBER}.zip backend
-                    pwd
-                    ls
                     echo ${BUILD_NUMBER}
                 """
            }
@@ -35,10 +29,10 @@ pipeline {
         stage('Transfer Files') {
             steps {
                 sh "echo ${BUILD_NUMBER}"
-                sh 'pwd'
-                sh 'ls'
-                sh 'ls frontend'
-                sh 'ls backend'
+                // sh 'pwd'
+                // sh 'ls'
+                // sh 'ls frontend'
+                // sh 'ls backend'
                 sh "scp frontend/fullstack_test_frontend${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/tmp"
                 sh "scp backend/fullstack_test_backend${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/tmp"
            }
@@ -52,12 +46,11 @@ pipeline {
                         rm -rf * && 
                         unzip /tmp/fullstack_test_frontend${BUILD_NUMBER}.zip -d . && 
                         unzip /tmp/fullstack_test_backend${BUILD_NUMBER}.zip -d . && 
+                        
                         cd backend && 
                         cp ../../fullstack_test_env/.env .
                         python3 -m venv venv && 
                         source venv/bin/activate && 
-                        echo "here"
-                        pwd
                         pip install -r requirements.txt && 
                         echo "${SERVER_PASS}" | sudo -S systemctl restart fullstack_test'
                 """
