@@ -23,9 +23,9 @@ pipeline {
                     ls 
                     pwd
                     rm -rf .git
-                    zip -r fullstack_test_backend_${BUILD_NUMBER}.zip ./backend
+                    zip -r fullstack_test_backend${BUILD_NUMBER}.zip ./backend
                     rm -rf backend/*
-                    mv fullstack_test_backend_${BUILD_NUMBER}.zip backend
+                    mv fullstack_test_backend${BUILD_NUMBER}.zip backend
                     pwd
                     ls
                     echo ${BUILD_NUMBER}
