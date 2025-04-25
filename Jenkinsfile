@@ -15,7 +15,7 @@ pipeline {
                     ls
                     pwd
                     cd frontend
-                    zip -r ../fullstack_test_frontend${BUILD_NUMBER}.zip dist/frontend
+                    zip -r ../fullstack_test_frontend${BUILD_NUMBER}.zip dist/frontend/*
                     rm -rf ./*
                     mv ../fullstack_test_frontend${BUILD_NUMBER}.zip .
 
@@ -49,7 +49,7 @@ pipeline {
                     ssh ${params.SERVER_USERNAME}@${params.SERVER_IP} '
                         cd /home/${params.SERVER_USERNAME}/fullstack_test_deploy/ && 
                         zip -r ../fullstack_test_backup/backup_${BUILD_NUMBER}.zip . && 
-                        rm -rf ./* && 
+                        rm -rf * && 
                         unzip /tmp/fullstack_test_frontend${BUILD_NUMBER}.zip -d . && 
                         unzip /tmp/fullstack_test_backend${BUILD_NUMBER}.zip -d . && 
                         cd backend && 
