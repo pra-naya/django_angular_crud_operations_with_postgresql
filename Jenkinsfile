@@ -37,6 +37,8 @@ pipeline {
                 sh "echo ${BUILD_NUMBER}"
                 sh 'pwd'
                 sh 'ls'
+                sh 'ls frontend'
+                sh 'ls backend'
                 sh "scp frontend/fullstack_test_frontend${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/tmp"
                 sh "scp backend/fullstack_test_backend${BUILD_NUMBER}.zip ${params.SERVER_USERNAME}@${params.SERVER_IP}:/tmp"
            }
