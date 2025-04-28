@@ -73,14 +73,6 @@ pipeline {
                         } 
                     }
 
-                    // if (params.BUILD_TARGET == 'BACKEND') {
-                    //     sh "scp backend/${BACKEND_ZIP} ${SERVER}:/tmp"
-                    // } else if (params.BUILD_TARGET == 'FRONTEND') {
-                    //     sh "scp frontend/${FRONTEND_ZIP} ${SERVER}:/tmp"
-                    // } else {
-                    //     sh "scp frontend/${FRONTEND_ZIP} ${SERVER}:/tmp"
-                    //     sh "scp backend/${BACKEND_ZIP} ${SERVER}:/tmp"
-                    // } 
                 }
             }
         }
