@@ -4,7 +4,6 @@ pipeline {
         FRONTEND_ZIP = "fullstack_test_frontend${BUILD_NUMBER}.zip"
         BACKEND_ZIP = "fullstack_test_backend${BUILD_NUMBER}.zip"
         SERVER = "${params.SERVER_USERNAME}@${params.SERVER_IP}"
-        SERVERS_IPS = "${params.SERVER_IPS}"
         SERVER_USERNAME = "${params.SERVER_USERNAME}"
         SERVER_PASS = "${params.SERVER_PASS}"
     }
