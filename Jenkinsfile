@@ -60,18 +60,28 @@ pipeline {
             steps {
                 script {
                     def server_list = params.SERVER_IPS.split("\n")
-                    server_list.each() {
-                        echo it
+                    for (server in server_list) {
+                        server.trim()
+                        echo server
+
+                        if (params.BUILD_TARGET == 'BACKEND') {
+                            sh "scp backend/${BACKEND_ZIP} ${params.SERVER_USERNAME}@${server}:/tmp"
+                        } else if (params.BUILD_TARGET == 'FRONTEND') {
+                            sh "scp frontend/${FRONTEND_ZIP} ${params.SERVER_USERNAME}@${server}:/tmp"
+                        } else {
+                            sh "scp frontend/${FRONTEND_ZIP} ${params.SERVER_USERNAME}@${server}:/tmp"
+                            sh "scp backend/${BACKEND_ZIP} ${params.SERVER_USERNAME}@${server}:/tmp"
+                        } 
                     }
 
-                    if (params.BUILD_TARGET == 'BACKEND') {
-                        sh "scp backend/${BACKEND_ZIP} ${SERVER}:/tmp"
-                    } else if (params.BUILD_TARGET == 'FRONTEND') {
-                        sh "scp frontend/${FRONTEND_ZIP} ${SERVER}:/tmp"
-                    } else {
-                        sh "scp frontend/${FRONTEND_ZIP} ${SERVER}:/tmp"
-                        sh "scp backend/${BACKEND_ZIP} ${SERVER}:/tmp"
-                    } 
+                    // if (params.BUILD_TARGET == 'BACKEND') {
+                    //     sh "scp backend/${BACKEND_ZIP} ${SERVER}:/tmp"
+                    // } else if (params.BUILD_TARGET == 'FRONTEND') {
+                    //     sh "scp frontend/${FRONTEND_ZIP} ${SERVER}:/tmp"
+                    // } else {
+                    //     sh "scp frontend/${FRONTEND_ZIP} ${SERVER}:/tmp"
+                    //     sh "scp backend/${BACKEND_ZIP} ${SERVER}:/tmp"
+                    // } 
                 }
             }
         }
