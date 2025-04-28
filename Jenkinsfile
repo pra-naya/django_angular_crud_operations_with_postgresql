@@ -4,6 +4,7 @@ pipeline {
         FRONTEND_ZIP = "fullstack_test_frontend${BUILD_NUMBER}.zip"
         BACKEND_ZIP = "fullstack_test_backend${BUILD_NUMBER}.zip"
         SERVER = "${params.SERVER_USERNAME}@${params.SERVER_IP}"
+        SERVERS_IPS = "${params.SERVER_IPS}"
         SERVER_USERNAME = "${params.SERVER_USERNAME}"
         SERVER_PASS = "${params.SERVER_PASS}"
     }
@@ -58,6 +59,11 @@ pipeline {
         stage('Transfer Files') {
             steps {
                 script {
+                    def server_list = params.SERVER_IPS.split("\n")
+                    server_list.each() {
+                        echo it
+                    }
+
                     if (params.BUILD_TARGET == 'BACKEND') {
                         sh "scp backend/${BACKEND_ZIP} ${SERVER}:/tmp"
                     } else if (params.BUILD_TARGET == 'FRONTEND') {
