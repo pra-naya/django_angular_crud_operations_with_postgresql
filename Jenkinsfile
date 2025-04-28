@@ -88,27 +88,32 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    if (params.BUILD_TARGET == 'BACKEND') {
-                        sh """
-                            ssh ${SERVER} '
-                                /home/${SERVER_USERNAME}/scripts/fullstack_test_backend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${BACKEND_ZIP} ${SERVER_PASS}
-                            '
-                        """
-                    } else if (params.BUILD_TARGET == 'FRONTEND') {
-                        sh """
-                            ssh ${SERVER} '
-                                /home/${SERVER_USERNAME}/scripts/fullstack_test_frontend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${FRONTEND_ZIP}
-                            '
-                        """
-                    } else {
-                        sh """
-                            ssh ${SERVER} '
-                                /home/${SERVER_USERNAME}/scripts/fullstack_test_frontend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${FRONTEND_ZIP}
-                                
-                                /home/${SERVER_USERNAME}/scripts/fullstack_test_backend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${BACKEND_ZIP} ${SERVER_PASS}
-                            '
-                        """
-                    } 
+                    def server_list = params.SERVER_IPS.split("\n")
+
+                    for (server in server_list) {
+                        if (params.BUILD_TARGET == 'BACKEND') {
+                            sh """
+                                ssh ${params.SERVER_USERNAME}@${server} '
+                                    /home/${SERVER_USERNAME}/scripts/fullstack_test_backend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${BACKEND_ZIP} ${SERVER_PASS}
+                                '
+                            """
+                        } else if (params.BUILD_TARGET == 'FRONTEND') {
+                            sh """
+                                ssh ${params.SERVER_USERNAME}@${server} '
+                                    /home/${SERVER_USERNAME}/scripts/fullstack_test_frontend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${FRONTEND_ZIP}
+                                '
+                            """
+                        } else {
+                            sh """
+                                ssh ${params.SERVER_USERNAME}@${server} '
+                                    /home/${SERVER_USERNAME}/scripts/fullstack_test_frontend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${FRONTEND_ZIP}
+                                    
+                                    /home/${SERVER_USERNAME}/scripts/fullstack_test_backend_deploy.sh ${SERVER_USERNAME} ${BUILD_NUMBER} ${BACKEND_ZIP} ${SERVER_PASS}
+                                '
+                            """
+                        } 
+                    }
+                    
                 }
            }
         }
